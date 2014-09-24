@@ -1,5 +1,7 @@
 package nl.loadingdata.jonads.monads;
 
+import java.util.function.BiFunction;
+
 import nl.loadingdata.jonads.Appliable;
 import nl.loadingdata.jonads.Functor;
 import nl.loadingdata.jonads.JonadException;
@@ -83,4 +85,17 @@ public abstract class Maybe<A> extends Monad<Maybe, A> {
 	public static <T> Maybe<T> nothing() {
 		return (Maybe<T>) NOTHING;
 	}
+	
+	public static <T, U, V> BiFunction<Maybe<T>, Maybe<U>, Maybe<V>> lift(BiFunction<T, U, V> func) {
+		return (Maybe<T> m1, Maybe<U> m2) -> {
+			try {
+				return (Maybe<V>) m1.bind((T v1) ->
+					m2.bind((U v2) ->
+						Maybe.just(func.apply(v1, v2))));
+			} catch (Exception e) {
+				return Maybe.nothing();
+			}
+		};
+	}
+
 }

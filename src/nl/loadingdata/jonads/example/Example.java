@@ -1,5 +1,7 @@
 package nl.loadingdata.jonads.example;
 
+import java.util.function.BiFunction;
+
 import nl.loadingdata.jonads.JonadException;
 import nl.loadingdata.jonads.monads.Maybe;
 
@@ -14,25 +16,9 @@ public class Example {
 		System.out.println (p2.get());
 		System.out.println (p3.get());
 		
-		Property<Integer> pm = mult(p2, p1);
+		BiFunction<Maybe<Integer>, Maybe<Integer>, Maybe<Integer>> mult = Maybe.lift((Integer i1, Integer i2) -> i1 * i2);
+		Property<Integer> pm = new Property<>(mult.apply(p1.get(), p2.get()));
 		System.out.println(pm.get());
-	}
-
-	private static Property<Integer> mult(Property<Integer> p1, Property<Integer> p2) {
-		Property<Integer> pm = new Property<>();
-		try {
-			pm.set(mult(p1.get(), p2.get()));
-		} catch (JonadException e) {
-			e.printStackTrace();
-		}
-		return pm;
-	}
-
-	private static Maybe<Integer> mult(Maybe<Integer> m1, Maybe<Integer> m2) throws JonadException {
-		return (Maybe<Integer>)
-				m1.bind((Integer i1) -> 
-					m2.bind((Integer i2) ->
-						Maybe.just(i1 * i2)));
 	}
 
 }
