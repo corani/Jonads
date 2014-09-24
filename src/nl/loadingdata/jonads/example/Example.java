@@ -18,7 +18,7 @@ public class Example {
 		
 		BiFunction<Maybe<Integer>, Maybe<Integer>, Maybe<Integer>> mult = Maybe.lift((Integer i1, Integer i2) -> i1 * i2);
 		Property<Integer> pm = new Property<>(mult.apply(p1.get(), p2.get()));
-		System.out.println(pm.get());
+		System.out.println (pm.get());
 	}
 
 }

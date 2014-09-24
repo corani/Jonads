@@ -56,7 +56,7 @@ public abstract class Maybe<A> extends Monad<Maybe, A> {
 	protected abstract <T> Maybe<T> mbBind(Appliable<A, Monad<Maybe, T>> arg) throws JonadException;
 	
 	@Override
-	public <T> Appliable<? extends Functor<Maybe, A>, ? extends Functor<Maybe, T>> map(Appliable<A, T> f) throws JonadException {
+	public <T> Appliable<? extends Functor<Maybe, A>, ? extends Functor<Maybe, T>> fmap(Appliable<A, T> f) throws JonadException {
 		return (Maybe<A> arg) -> arg.mbBind(a -> Maybe.just(f.apply(a)));
 	}
 	
