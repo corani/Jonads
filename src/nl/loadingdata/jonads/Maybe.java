@@ -53,7 +53,29 @@ public abstract class Maybe<A> extends Monad<Maybe, A> {
 		return (Maybe<A> arg) -> arg.mbBind(a -> Maybe.just(f.apply(a)));
 	}
 	
+	@Override
+	public String toString() {
+		String[] res = new String[1];
+		try {
+			bind((A x) -> {
+				res[0] = x.toString();
+				return just(x);
+			});
+		} catch (JonadException e) {
+			e.printStackTrace();
+		}
+		if (res[0] == null) {
+			res[0] = "NOTHING";
+		}
+		return "Maybe<" + res[0] + ">";
+	}
+	
 	public static <T> Maybe<T> just(T x) {
 		return new Just<T>(x);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> Maybe<T> nothing() {
+		return (Maybe<T>) NOTHING;
 	}
 }

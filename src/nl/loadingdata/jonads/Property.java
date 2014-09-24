@@ -11,31 +11,33 @@ public class Property<T> {
 		this.val = val;
 	}
 	
-	public void set(T val) {
-		this.val = val;
+	public Property(Maybe<T> val) throws JonadException {
+		set(val);
 	}
 	
-	public T get() {
-		return val;
+	public Maybe<T> get() throws JonadException {
+		return getter().apply();
 	}
-
+	
+	public void set(Maybe<T> val) throws JonadException {
+		setter().apply(val);
+	}
+	
 	public Appliable<Maybe<T>, Monad<Maybe, Property<T>>> setter() {
-		return v -> {
-			return cast(v.bind((T i) -> {
-				set(i);
+		return (Maybe<T> v) ->
+			cast(v.bind((T i) -> {
+				val = i;
 				return Maybe.just(i);
 			}));
-		};
 	}
 
 	public Appliable<Property<T>, Maybe<T>> getter() {
 		return (Property<T> p) -> {
-			Maybe<T> ans = cast(Maybe.NOTHING);
-			T res = get();
-			if (res != null) {
-				ans = Maybe.just(res);
+			if (val == null) {
+				return Maybe.nothing();
+			} else {
+				return Maybe.just(val);
 			}
-			return ans;
 		};
 	}
 	
@@ -44,9 +46,4 @@ public class Property<T> {
 		return (Monad<Maybe, Property<T>>) bind;
 	}
 
-	@SuppressWarnings("unchecked")
-	private Maybe<T> cast(Maybe<?> nothing) {
-		return (Maybe<T>) nothing;
-	}
-	
 }
