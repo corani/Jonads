@@ -1,4 +1,9 @@
-package nl.loadingdata.jonads;
+package nl.loadingdata.jonads.monads;
+
+import nl.loadingdata.jonads.Appliable;
+import nl.loadingdata.jonads.Functor;
+import nl.loadingdata.jonads.JonadException;
+import nl.loadingdata.jonads.Monad;
 
 @SuppressWarnings("rawtypes")
 public abstract class Maybe<A> extends Monad<Maybe, A> {

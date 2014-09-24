@@ -1,4 +1,9 @@
-package nl.loadingdata.jonads;
+package nl.loadingdata.jonads.example;
+
+import nl.loadingdata.jonads.Appliable;
+import nl.loadingdata.jonads.JonadException;
+import nl.loadingdata.jonads.Monad;
+import nl.loadingdata.jonads.monads.Maybe;
 
 @SuppressWarnings("rawtypes")
 public class Property<T> {

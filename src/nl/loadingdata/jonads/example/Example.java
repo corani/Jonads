@@ -1,4 +1,7 @@
-package nl.loadingdata.jonads;
+package nl.loadingdata.jonads.example;
+
+import nl.loadingdata.jonads.JonadException;
+import nl.loadingdata.jonads.monads.Maybe;
 
 public class Example {
 	
