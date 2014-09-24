@@ -38,7 +38,7 @@ public abstract class Maybe<A> extends Monad<Maybe, A> {
 			try {
 				return (Maybe<?>) value;
 			} catch (ClassCastException e) {
-				throw new JonadException("Can't join");
+				throw new JonadException("Value is not a Maybe");
 			}
 		}
 
