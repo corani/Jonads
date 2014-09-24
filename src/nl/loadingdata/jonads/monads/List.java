@@ -19,16 +19,12 @@ public abstract class List<A> extends Monad<List, A> {
 		public Object val() throws JonadException {
 			throw new JonadException("Nil list has no value");
 		}
-
-		@Override
-		protected List lsBind(Appliable arg) throws JonadException {
-			return this;
-		}
 		
 		public String toString() {
 			return "Nil";
 		};
 	};
+	
 	
 	public static class Cons<J> extends List<J> {
 		private J head;
@@ -42,20 +38,15 @@ public abstract class List<A> extends Monad<List, A> {
 		@Override
 		public Functor<List, ?> join() throws JonadException {
 			try {
-				return (List<J>) tail;
+				return (List<J>) this;
 			} catch (ClassCastException e) {
-				throw new JonadException("tail is not a List");
+				throw new JonadException("Not a List");
 			}
 		}
 
 		@Override
 		public J val() throws JonadException {
 			return head;
-		}
-
-		@Override @SuppressWarnings("unchecked")
-		protected <T> T lsBind(Appliable<J, Monad<List, T>> f) throws JonadException {
-			return (T) f.apply(head);
 		}
 		
 		@Override
@@ -68,8 +59,6 @@ public abstract class List<A> extends Monad<List, A> {
 		return new Cons<T>(head, tail);
 	}
 	
-	protected abstract <T> T lsBind(Appliable<A, Monad<List, T>> f) throws JonadException;
-
 	@SuppressWarnings("unchecked")
 	public static <T> List<T> nil() {
 		return (List<T>) NIL;
@@ -87,13 +76,19 @@ public abstract class List<A> extends Monad<List, A> {
 			List<U> result = List.nil();
 			while (arg != List.nil()) {
 				Cons<A> c = (Cons<A>) arg;
-				result = List.cons((U) arg.lsBind(a -> List.just(f.apply(a))), result);
+				U apply = f.apply(c.head);
+				while (apply != List.nil()) {
+					@SuppressWarnings("unchecked")
+					Cons<A> cc = (Cons<A>) apply;
+					result = List.cons(cast(cc.head), result);
+					apply = cast(cc.tail);
+				}
 				arg = c.tail;
 			}
 			return result;
 		};
 	}
-	
+
 	public static <T, U, V> BiFunction<List<T>, List<U>, List<V>> lift(BiFunction<T, U, V> func) {
 		return (List<T> l1, List<U> l2) -> {
 			try {
@@ -104,6 +99,16 @@ public abstract class List<A> extends Monad<List, A> {
 				return List.nil();
 			}
 		};
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> T cast(A head) {
+		return (T) head;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <T> T cast(List<A> tail) {
+		return (T) tail;
 	}
 
 }
