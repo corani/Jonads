@@ -1,5 +1,6 @@
 package nl.loadingdata.jonads;
 
+@SuppressWarnings("rawtypes")
 public class Property<T> {
 	private T val;
 	
@@ -18,21 +19,21 @@ public class Property<T> {
 		return val;
 	}
 
-	public Apply<Maybe<T>, Monad<Maybe, Property<T>>> setter() {
+	public Appliable<Maybe<T>, Monad<Maybe, Property<T>>> setter() {
 		return v -> {
 			return cast(v.bind((T i) -> {
 				set(i);
-				return Maybe.pure(i);
+				return Maybe.just(i);
 			}));
 		};
 	}
 
-	public Apply<Property<T>, Maybe<T>> getter() {
+	public Appliable<Property<T>, Maybe<T>> getter() {
 		return (Property<T> p) -> {
 			Maybe<T> ans = cast(Maybe.NOTHING);
 			T res = get();
 			if (res != null) {
-				ans = Maybe.pure(res);
+				ans = Maybe.just(res);
 			}
 			return ans;
 		};

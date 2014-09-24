@@ -1,6 +1,8 @@
 package nl.loadingdata.jonads;
 
 public interface Functor<F, T> {
-	public <U> Apply<? extends Functor<F, T>, ? extends Functor<F, U>> fmap(Apply<T, U> f) throws JonadException;
-	public T arg() throws JonadException;
+	public <U> Appliable<? extends Functor<F, T>,
+						 ? extends Functor<F, U>>
+			map(Appliable<T, U> f) throws JonadException;
+	public T val() throws JonadException;
 }

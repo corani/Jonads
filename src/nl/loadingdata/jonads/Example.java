@@ -29,14 +29,14 @@ public class Example {
 		return (Maybe<Integer>)
 				m1.bind((Integer i1) -> 
 					m2.bind((Integer i2) ->
-						Maybe.pure(i1 * i2)));
+						Maybe.just(i1 * i2)));
 	}
 
 	private static void print(Maybe<Integer> m) {
 		try {
 			m.bind((Integer i) -> {
 				System.out.println(i);
-				return Maybe.pure(i);
+				return m;
 			});
 		} catch (JonadException e) {
 			e.printStackTrace();
