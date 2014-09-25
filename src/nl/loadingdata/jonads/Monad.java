@@ -6,4 +6,5 @@ public abstract class Monad<M, A> implements Joinable<M, A> {
 		Appliable<Monad<M, A>, Monad<M, Monad<M, T>>> a = (Appliable<Monad<M, A>, Monad<M, Monad<M, T>>>) fmap(f);
 		return (Monad<M, T>) a.apply(this).join();
 	}
+	
 }

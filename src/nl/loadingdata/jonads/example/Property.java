@@ -50,5 +50,14 @@ public class Property<T> {
 	private Monad<Maybe, Property<T>> cast(Monad<Maybe, T> bind) {
 		return (Monad<Maybe, Property<T>>) bind;
 	}
+	
+	@Override
+	public String toString() {
+		try {
+			return "Property<" + get().toString() + ">";
+		} catch (JonadException e) {
+			return "Property<>";
+		}
+	}
 
 }

@@ -9,22 +9,19 @@ import nl.loadingdata.jonads.monads.Maybe;
 public class Example {
 	
 	public static void main(String[] args) throws JonadException {
-		System.out.println ("Properties:");
-		
 		List<Property<Integer>> props = List.of(
 			new Property<>(2),
 			new Property<>(3),
 			new Property<>()
 		);
-		props.bind(p -> {
-			System.out.println(p.get());
-			return List.nil();
-		});
+
+		System.out.println ("Properties:");
+		props.bind(Example::printList);
 		
 		List<Maybe<Integer>> maybes = List.map(props, (Property<Integer> p) -> {
 			try {
 				return p.get();
-			} catch (Exception e) {
+			} catch (JonadException e) {
 				return Maybe.nothing();
 			}
 		});
@@ -37,11 +34,14 @@ public class Example {
 		);
 		
 		List<Maybe<Integer>> result = listMult.apply(maybes, maybes);
+		
 		System.out.println("In-Product:");
-		result.bind(i -> {
-			System.out.println(i);
-			return List.just(i);
-		});
+		result.bind(Example::printList);
+	}
+	
+	public static <T, U> List<T> printList(U val) {
+		System.out.println(val.toString());
+		return List.nil();
 	}
 
 }
