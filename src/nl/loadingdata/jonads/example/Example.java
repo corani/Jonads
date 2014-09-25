@@ -9,16 +9,25 @@ import nl.loadingdata.jonads.monads.Maybe;
 public class Example {
 	
 	public static void main(String[] args) throws JonadException {
-		Property<Integer> p1 = new Property<>(2);
-		Property<Integer> p2 = new Property<>(3);
-		Property<Integer> p3 = new Property<>();
-
 		System.out.println ("Properties:");
-		System.out.println (p1.get());
-		System.out.println (p2.get());
-		System.out.println (p3.get());
 		
-		List<Maybe<Integer>> props = List.of(p1.get(), p2.get(), p3.get()); 
+		List<Property<Integer>> props = List.of(
+			new Property<>(2),
+			new Property<>(3),
+			new Property<>()
+		);
+		props.bind(p -> {
+			System.out.println(p.get());
+			return List.nil();
+		});
+		
+		List<Maybe<Integer>> maybes = List.map(props, (Property<Integer> p) -> {
+			try {
+				return p.get();
+			} catch (Exception e) {
+				return Maybe.nothing();
+			}
+		});
 		
 		BiFunction<List<Maybe<Integer>>, List<Maybe<Integer>>, List<Maybe<Integer>>> listMult
 			= List.lift((Maybe<Integer> m1, Maybe<Integer> m2) ->
@@ -27,7 +36,7 @@ public class Example {
 			).apply(m1, m2)
 		);
 		
-		List<Maybe<Integer>> result = listMult.apply(props, props);
+		List<Maybe<Integer>> result = listMult.apply(maybes, maybes);
 		System.out.println("In-Product:");
 		result.bind(i -> {
 			System.out.println(i);

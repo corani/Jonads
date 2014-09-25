@@ -72,21 +72,7 @@ public abstract class List<A> extends Monad<List, A> {
 	public <U> Appliable<? extends Functor<List, A>,
 						 ? extends Functor<List, U>>
 			fmap(Appliable<A, U> f) throws JonadException {
-		return (List<A> arg) -> {
-			List<U> result = List.nil();
-			while (arg != List.nil()) {
-				Cons<A> c = (Cons<A>) arg;
-				U apply = f.apply(c.head);
-				while (apply != List.nil()) {
-					@SuppressWarnings("unchecked")
-					Cons<A> cc = (Cons<A>) apply;
-					result = List.cons(cast(cc.head), result);
-					apply = cast(cc.tail);
-				}
-				arg = c.tail;
-			}
-			return result;
-		};
+		return (List<A> arg) -> List.flatMap(arg, f);
 	}
 
 	public static <T, U, V> BiFunction<List<T>, List<U>, List<V>> lift(BiFunction<T, U, V> func) {
@@ -101,21 +87,37 @@ public abstract class List<A> extends Monad<List, A> {
 		};
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T> T cast(A head) {
-		return (T) head;
-	}
-	
-	@SuppressWarnings("unchecked")
-	private <T> T cast(List<A> tail) {
-		return (T) tail;
-	}
-
 	@SafeVarargs
 	public static <T> List<T> of(T...ts) {
 		List<T> result = nil();
 		for (T t : ts) {
 			result = List.cons(t, result);
+		}
+		return result;
+	}
+	
+	public static <T, R> List<R> map(List<T> list, Appliable<T, R> map) throws JonadException {
+		List<R> result = List.nil();
+		while (list != List.nil()) {
+			Cons<T> c = (Cons<T>) list;
+			result = cons(map.apply(c.head), result);
+			list = c.tail;
+		}
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T, R> List<R> flatMap(List<T> list, Appliable<T, R> map) throws JonadException {
+		List<R> result = List.nil();
+		while (list != List.nil()) {
+			Cons<T> c = (Cons<T>) list;
+			R apply = map.apply(c.head);
+			while (apply != List.nil()) {
+				Cons<T> cc = (Cons<T>) apply;
+				result = List.cons((R) cc.head, result);
+				apply = (R) cc.tail;
+			}
+			list = c.tail;
 		}
 		return result;
 	}
