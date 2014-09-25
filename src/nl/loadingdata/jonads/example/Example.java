@@ -18,10 +18,7 @@ public class Example {
 		System.out.println (p2.get());
 		System.out.println (p3.get());
 		
-		List<Maybe<Integer>> props = List.nil();
-		props = List.cons(p1.get(), props);
-		props = List.cons(p2.get(), props);
-		props = List.cons(p3.get(), props);
+		List<Maybe<Integer>> props = List.of(p1.get(), p2.get(), p3.get()); 
 		
 		BiFunction<List<Maybe<Integer>>, List<Maybe<Integer>>, List<Maybe<Integer>>> listMult
 			= List.lift((Maybe<Integer> m1, Maybe<Integer> m2) ->

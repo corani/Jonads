@@ -111,4 +111,13 @@ public abstract class List<A> extends Monad<List, A> {
 		return (T) tail;
 	}
 
+	@SafeVarargs
+	public static <T> List<T> of(T...ts) {
+		List<T> result = nil();
+		for (T t : ts) {
+			result = List.cons(t, result);
+		}
+		return result;
+	}
+
 }
